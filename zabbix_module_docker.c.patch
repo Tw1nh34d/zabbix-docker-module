@@ -1,0 +1,101 @@
+--- zabbix_module_docker.c.1    2019-11-26 10:44:44.648952229 +0200
++++ zabbix_module_docker.c      2019-11-26 10:24:23.836165668 +0200
+@@ -382,7 +382,7 @@
+             char *param1;
+             param1 = get_rparam(request, 1);
+             // 1st level - plain value search
+-            if (SUCCEED != zbx_json_value_by_name(&jp_data, param1, api_value, buffer_size))
++            if (SUCCEED != zbx_json_value_by_name(&jp_data, param1, api_value, buffer_size, NULL))
+             {
+                 // 1st level - json object search
+                 if (SUCCEED != zbx_json_brackets_by_name(&jp_data, param1, &jp_data2))
+@@ -399,7 +399,7 @@
+                     {
+                         char *param2, api_value2[buffer_size];
+                         param2 = get_rparam(request, 2);
+-                        if (SUCCEED != zbx_json_value_by_name(&jp_data2, param2, api_value2, buffer_size))
++                        if (SUCCEED != zbx_json_value_by_name(&jp_data2, param2, api_value2, buffer_size, NULL))
+                         {
+                             struct zbx_json_parse jp_data_array;
+                             if (SUCCEED != zbx_json_brackets_by_name(&jp_data2, param2, &jp_data_array))
+@@ -483,7 +483,7 @@
+                                char *param3, api_value3[buffer_size];
+                                param3 = get_rparam(request, 3);
+                                struct zbx_json_parse jp_data3 = {&api_value2[0], &api_value2[strlen(api_value2)]};
+-                               if (SUCCEED != zbx_json_value_by_name(&jp_data3, param3, api_value3, buffer_size))
++                               if (SUCCEED != zbx_json_value_by_name(&jp_data3, param3, api_value3, buffer_size, NULL))
+                                {
+                                     free((void*) answer);
+                                     zabbix_log(LOG_LEVEL_WARNING, "Cannot find the [%s][%s][%s] item in the received JSON object", param1, param2, param3);
+@@ -608,7 +608,7 @@
+     }
+
+     // Lookup HostPort value
+-    if (FAIL == zbx_json_value_by_name(&jp_obj, "HostPort", host_port, sizeof(host_port))) {
++    if (FAIL == zbx_json_value_by_name(&jp_obj, "HostPort", host_port, sizeof(host_port), NULL)) {
+       zabbix_log(LOG_LEVEL_DEBUG, "zbx_json_value_by_name FAIL: %s", zbx_json_strerror());
+       continue;
+     }
+@@ -1792,7 +1792,7 @@
+                 zabbix_log(LOG_LEVEL_DEBUG, "Parsed container name: %s", names);
+
+                 // FCONTAINERID - full container id
+-                if (SUCCEED != zbx_json_value_by_name(&jp_row, "Id", cid, cid_length))
++                if (SUCCEED != zbx_json_value_by_name(&jp_row, "Id", cid, cid_length, NULL))
+                 {
+                     zabbix_log(LOG_LEVEL_WARNING, "Cannot find the \"Id\" array in the received JSON object");
+                     continue;
+@@ -1952,7 +1952,7 @@
+
+         char api_value[buffer_size];
+         struct zbx_json_parse jp_data = {&answer[0], &answer[strlen(answer)]};
+-        if (SUCCEED != zbx_json_value_by_name(&jp_data, info, api_value, buffer_size))
++        if (SUCCEED != zbx_json_value_by_name(&jp_data, info, api_value, buffer_size, NULL))
+         {
+             zabbix_log(LOG_LEVEL_WARNING, "Cannot find the [%s] item in the received JSON object", info);
+             SET_MSG_RESULT(result, zbx_dsprintf(NULL, "Cannot find the [%s] item in the received JSON object", info));
+@@ -2029,7 +2029,7 @@
+             char *param1;
+             param1 = get_rparam(request, 1);
+             // 1st level - plain value search
+-            if (SUCCEED != zbx_json_value_by_name(&jp_data, param1, api_value, buffer_size))
++            if (SUCCEED != zbx_json_value_by_name(&jp_data, param1, api_value, buffer_size, NULL))
+             {
+                  // 1st level - json object search
+                 if (SUCCEED != zbx_json_brackets_by_name(&jp_data, param1, &jp_data2))
+@@ -2044,7 +2044,7 @@
+                     {
+                         char *param2, api_value2[buffer_size];
+                         param2 = get_rparam(request, 2);
+-                        if (SUCCEED != zbx_json_value_by_name(&jp_data2, param2, api_value2, buffer_size))
++                        if (SUCCEED != zbx_json_value_by_name(&jp_data2, param2, api_value2, buffer_size, NULL))
+                         {
+                             // 2nd level - json object search
+                             if (SUCCEED != zbx_json_brackets_by_name(&jp_data2, param2, &jp_data3))
+@@ -2059,7 +2059,7 @@
+                                 {
+                                     char *param3, api_value3[buffer_size];
+                                     param3 = get_rparam(request, 3);
+-                                    if (SUCCEED != zbx_json_value_by_name(&jp_data3, param3, api_value3, buffer_size))
++                                    if (SUCCEED != zbx_json_value_by_name(&jp_data3, param3, api_value3, buffer_size, NULL))
+                                     {
+                                         zabbix_log(LOG_LEVEL_WARNING, "Cannot find the [%s][%s][%s] item in the received JSON object", param1, param2, param3);
+                                         SET_MSG_RESULT(result, zbx_dsprintf(NULL, "Cannot find the [%s][%s][%s] item in the received JSON object", param1, param2, param3));
+@@ -2241,7 +2241,7 @@
+                             continue;
+                         }
+
+-                        if (SUCCEED != zbx_json_value_by_name(&jp_row, "Status", status, cid_length))
++                        if (SUCCEED != zbx_json_value_by_name(&jp_row, "Status", status, cid_length, NULL))
+                         {
+                             zabbix_log(LOG_LEVEL_WARNING, "Cannot find the \"Status\" array in the received JSON object");
+                             continue;
+@@ -2323,7 +2323,7 @@
+                                     continue;
+                                 }
+
+-                                if (SUCCEED != zbx_json_value_by_name(&jp_row, "Status", status, cid_length))
++                                if (SUCCEED != zbx_json_value_by_name(&jp_row, "Status", status, cid_length, NULL))
+                                 {
+                                     zabbix_log(LOG_LEVEL_WARNING, "Cannot find the \"Status\" array in the received JSON object");
+                                     continue;

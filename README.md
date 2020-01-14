@@ -1,7 +1,12 @@
 # zabbix-docker-module
 
-Dockerfiles taken from
+<h1>Dockerfiles</h1>
+taken from
 https://github.com/monitoringartist/zabbix-docker-monitoring
+
+<h1>Patch</h1> 
+taken from (thx <a href="https://github.com/tambetliiv">@tambetliiv</a>)
+https://github.com/monitoringartist/zabbix-docker-monitoring/issues/133#issuecomment-558535199
 
 docker build --rm=true -t local/zabbix-docker-module-compilation .
 

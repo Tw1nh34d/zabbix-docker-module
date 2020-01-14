@@ -6,13 +6,13 @@ FROM ubuntu:18.04
 MAINTAINER "Jan Garaj" <info@monitoringartist.com>
 
 # Define required Zabbix version (<version>) or release (release/<version>), e.g. 4.2.2, or release/4.2
-ENV ZABBIX_VERSION=release/4.2
+ENV ZABBIX_VERSION=release/4.4
 
 WORKDIR /root
 
 RUN \
    apt-get -qq update 1>/dev/null && \
-   apt-get -qq --assume-yes install git automake autoconf gcc make pkg-config libpcre3-dev 1>/dev/null && \
+   apt-get -qq --assume-yes install git automake autoconf gcc make pkg-config libpcre3-dev wget patch 1>/dev/null && \
    git clone -q https://github.com/monitoringartist/zabbix-docker-monitoring
 
 RUN \
@@ -20,6 +20,8 @@ RUN \
    cd ~/zabbix/ && \
    ./bootstrap.sh 1>/dev/null && \
    ./configure --enable-agent 1>/dev/null && \
+   wget https://raw.githubusercontent.com/Tw1nh34d/zabbix-docker-module/master/zabbix_module_docker.c.patch && \
+   patch ~/zabbix-docker-monitoring/src/modules/zabbix_module_docker/zabbix_module_docker.c ~/zabbix/zabbix_module_docker.c.patch && \
    cp -R ~/zabbix-docker-monitoring/src/modules/zabbix_module_docker/ ~/zabbix/src/modules/ && \
    cd ~/zabbix/src/modules/zabbix_module_docker && \
    make
